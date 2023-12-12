@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo da Velha</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            margin: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<table id="tabuleiro"></table>
+<script>
+    let tabuleiro = [
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""]
+    ];
+
+    let jogadorAtual = "X";
+    const tabuleiroElement = document.getElementById("tabuleiro");
+
+    function iniciarJogo() {
+        for (let i = 0; i < 3; i++) {
+            const linha = document.createElement("tr");
+            for (let j = 0; j < 3; j++) {
+                const celula = document.createElement("td");
+                celula.setAttribute("onclick", `jogar(${i}, ${j})`);
+                linha.appendChild(celula);
+            }
+            tabuleiroElement.appendChild(linha);
+        }
+    }
+
+    function jogar(linha, coluna) {
+        if (tabuleiro[linha][coluna] === "") {
+            tabuleiro[linha][coluna] = jogadorAtual;
+            atualizarTabuleiro();
+            if (verificarVitoria()) {
+                alert(`Jogador ${jogadorAtual} venceu!`);
+                reiniciarJogo();
+            } else if (tabuleiroCheio()) {
+                alert("O jogo empatou!");
+                reiniciarJogo();
+            } else {
+                jogadorAtual = jogadorAtual === "X" ? "O" : "X";
+            }
+        } else {
+            alert("Posição já ocupada. Tente novamente.");
+        }
+    }
+
+    function atualizarTabuleiro() {
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                const celula = tabuleiroElement.rows[i].cells[j];
+                celula.textContent = tabuleiro[i][j];
+            }
+        }
+    }
+
+    function verificarVitoria() {
+        // Verificar linhas e colunas
+        for (let i = 0; i < 3; i++) {
+            if (tabuleiro[i][0] === jogadorAtual && tabuleiro[i][1] === jogadorAtual && tabuleiro[i][2] === jogadorAtual ||
+                tabuleiro[0][i] === jogadorAtual && tabuleiro[1][i] === jogadorAtual && tabuleiro[2][i] === jogadorAtual) {
+                return true;
+            }
+        }
+
+        // Verificar diagonais
+        if (tabuleiro[0][0] === jogadorAtual && tabuleiro[1][1] === jogadorAtual && tabuleiro[2][2] === jogadorAtual ||
+            tabuleiro[0][2] === jogadorAtual && tabuleiro[1][1] === jogadorAtual && tabuleiro[2][0] === jogadorAtual) {
+            return true;
+        }
+
+        return false;
+    }
+
+    function tabuleiroCheio() {
+        return tabuleiro.every(linha => linha.every(celula => celula !== ""));
+    }
+
+    function reiniciarJogo() {
+        tabuleiro = [
+            ["", "", ""],
+            ["", "", ""],
+            ["", "", ""]
+        ];
+        jogadorAtual = "X";
+        atualizarTabuleiro();
+    }
+
+    iniciarJogo();
+</script>
+
+</body>
+</html>
